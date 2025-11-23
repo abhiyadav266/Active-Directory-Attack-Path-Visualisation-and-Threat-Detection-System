@@ -92,3 +92,4 @@ Simulate an end-to-end enterprise breach — from **initial AD enumeration to do
 Cybersecurity | Active Directory | Threat Detection | Red / Blue Team
 
 ---
+⭐ If you found this project helpful, consider giving it a star!
