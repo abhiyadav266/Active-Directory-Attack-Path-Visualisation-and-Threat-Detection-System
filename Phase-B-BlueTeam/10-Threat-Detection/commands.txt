@@ -1,0 +1,95 @@
+# Environment
+- Wazuh Server (Ubuntu)
+- Windows 10 (win10 agent)
+- Windows Server (winserver agent)
+- Sysmon + Wazuh + MITRE ATT&CK + PCI DSS + CIS Benchmark
+
+-----------------------------------------
+1. Verify Agents and Status
+-----------------------------------------
+# Wazuh Dashboard → Overview
+# Agents Summary = win10 (active), winserver (active)
+
+-----------------------------------------
+2. Compliance Assessment (CIS Benchmark)
+-----------------------------------------
+# win10
+Navigation: Dashboard → Configuration Assessment → win10
+# CIS Microsoft Windows 10 Enterprise Benchmark v1.12.0
+# Passed: 129 | Failed: 261 | Score: 33%
+
+# winserver
+Navigation: Dashboard → Configuration Assessment → winserver
+# CIS Microsoft Windows Server 2019 Benchmark v1.0.1
+# Passed: 38 | Failed: 16 | Score: 70%
+
+-----------------------------------------
+3. PCI DSS Authentication Monitoring
+-----------------------------------------
+Navigation → PCI DSS → win10 → Events
+# Alerts detected:
+Rule: Windows User Logoff
+Rule: Windows Logon Success
+
+-----------------------------------------
+4. MITRE ATT&CK Monitoring – win10
+-----------------------------------------
+Navigation: MITRE ATT&CK → win10 → rule.mitre.technique: Valid Accounts
+# Alert: T1078 (Valid Accounts)
+# Description: Windows logon success (authentication)
+
+-----------------------------------------
+5. MITRE ATT&CK Monitoring – winserver
+-----------------------------------------
+Navigation: MITRE ATT&CK → winserver
+# Alert 1: Valid Accounts → T1078
+# Alert 2: Suspicious Command Shell Execution → T1059.003
+# Alert 3: Account Discovery → T1087, T1059.003
+# Alert 4: Pass-the-Hash → T1550.002, T1078.002, T1021.001
+
+-----------------------------------------
+6. Pass-the-Hash Attack Detection (Critical)
+-----------------------------------------
+Navigation: MITRE ATT&CK → winserver
+Rule ID: 92657
+Description: NTLM authentication detected — Possible pass-the-hash / RDP remote logon
+Technique: T1550.002 (Use Alternate Authentication Material)
+Severity: Level 6 (Critical)
+
+-----------------------------------------
+7. Abnormal Command Execution Detection
+-----------------------------------------
+Navigation: Endpoints → winserver → Windows Command Shell
+Rule ID: 92052
+Description: Windows command prompt started by an abnormal process
+Technique: T1059.003 (Command and Scripting Interpreter)
+
+-----------------------------------------
+8. Account Discovery Attack Detection
+-----------------------------------------
+Navigation: Endpoints → winserver → Account Discovery
+Rule ID: 92032 / 92031 / 92033
+Technique: T1087 (Account Discovery)
+Technique: T1059.003 (PowerShell/Command execution)
+
+-----------------------------------------
+9. Vulnerability Detection
+-----------------------------------------
+Navigation: Vulnerability Detection → win10 → Inventory
+# 1 High severity vulnerability detected
+Package: Microsoft Windows 10 Pro
+Vulnerability ID: CVE-2024-29988
+
+-----------------------------------------
+10. Final Security View – Endpoint Summary
+-----------------------------------------
+Navigation: Endpoints → winserver
+Top MITRE Tactics:
+- Privilege Escalation
+- Persistence
+- Defense Evasion
+- Initial Access
+- Execution
+
+Navigation: Endpoints → win10
+Authentication Events | PCI DSS | CIS | Threat Monitoring all visible

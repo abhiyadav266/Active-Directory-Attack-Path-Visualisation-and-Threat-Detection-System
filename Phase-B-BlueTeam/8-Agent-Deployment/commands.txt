@@ -1,0 +1,41 @@
+# Environment
+- Wazuh Server: Ubuntu Server 22.04
+- Agents: Windows Server + Windows 10
+
+-----------------------------------------
+1. Open Agent Deployment Panel
+-----------------------------------------
+# Wazuh Dashboard → Agents → Add new agent
+
+-----------------------------------------
+2. Configure Agent Details
+-----------------------------------------
+# Enter Wazuh Server IP
+# Assign agent names:
+# - winserver  → for Windows Server
+# - win10      → for Windows 10
+
+-----------------------------------------
+3. Install Wazuh Agent on Windows Server
+-----------------------------------------
+# Run in PowerShell (Administrator)
+Invoke-WebRequest -Uri https://packages.wazuh.com/4.x/windows/wazuh-agent-4.8.2-1.msi -OutFile ${env.tmp}\wazuh-agent; msiexec.exe /i ${env.tmp}\wazuh-agent /q WAZUH_MANAGER='<Ubuntu-Server-IP>' WAZUH_AGENT_NAME='winserver'
+
+-----------------------------------------
+4. Install Wazuh Agent on Windows 10
+-----------------------------------------
+# Run in PowerShell (Administrator)
+Invoke-WebRequest -Uri https://packages.wazuh.com/4.x/windows/wazuh-agent-4.8.2-1.msi -OutFile ${env.tmp}\wazuh-agent; msiexec.exe /i ${env.tmp}\wazuh-agent /q WAZUH_MANAGER='<Ubuntu-Server-IP>' WAZUH_AGENT_NAME='win10'
+
+-----------------------------------------
+5. Start Wazuh Agent Service (Both machines)
+-----------------------------------------
+NET START WazuhSvc
+
+-----------------------------------------
+6. Verify Agents on Dashboard
+-----------------------------------------
+# Wazuh Dashboard → Agents
+# Status becomes:
+# - winserver → Active
+# - win10 → Active

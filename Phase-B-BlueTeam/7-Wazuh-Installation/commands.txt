@@ -1,0 +1,46 @@
+# Environment
+- Ubuntu Server 22.04 (Wazuh All-in-One Server)
+- Kali Linux (Attacker / Web Browser for Dashboard Access)
+- VMware (Virtualization Platform)
+
+-----------------------------------------
+1. Install Ubuntu Server on VMware
+-----------------------------------------
+# New Virtual Machine → Choose Ubuntu Server 22.04 ISO
+# Hardware Configuration:
+# - 4 GB RAM
+# - 40 GB Storage
+# - 2 CPU Cores
+# Continue installation and complete profile setup:
+# - Name, Username, Server Name, Password
+# Enable → "OpenSSH Server" during installation
+
+-----------------------------------------
+2. Download Wazuh Installation Script
+-----------------------------------------
+curl -sO https://packages.wazuh.com/4.6/wazuh-install.sh
+
+-----------------------------------------
+3. Grant Execute Permission
+-----------------------------------------
+chmod +x wazuh-install.sh
+
+-----------------------------------------
+4. Install Wazuh (All-in-One Deployment)
+-----------------------------------------
+sudo bash wazuh-install.sh -a
+# Installs Wazuh Indexer, Wazuh Manager, Wazuh Dashboard, Filebeat
+# At the end of installation → admin username + password displayed
+
+-----------------------------------------
+5. Access Wazuh Dashboard from Kali
+-----------------------------------------
+# On Kali Browser:
+https://<UBUNTU_SERVER_IP>
+# Login using admin credentials provided at installation completion
+
+-----------------------------------------
+6. Dashboard Status
+-----------------------------------------
+# Dashboard opens successfully
+# Agents Count = 0 (no agents connected yet)

